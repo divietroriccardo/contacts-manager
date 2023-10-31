@@ -1,0 +1,61 @@
+<ng-template
+  [ngIf]="pageService.pageIsOn === 'list' || pageService.pageIsOn === 'search'"
+>
+  <button
+    mat-fab
+    color="basic"
+    [routerLink]="['/newContact']"
+    aria-label="Aggiungi Contatto"
+    extended
+  >
+    <mat-icon>person_add</mat-icon>
+    Aggiungi contatto
+  </button>
+</ng-template>
+
+<ng-template
+  [ngIf]="
+    pageService.pageIsOn === 'edit' ||
+    pageService.pageIsOn === 'add' ||
+    pageService.pageIsOn === 'details'
+  "
+>
+  <button
+    mat-fab
+    color="basic"
+    (click)="openDialog()"
+    aria-label="Lista Contatti"
+    extended
+  >
+    <mat-icon>list</mat-icon>
+    Torna alla lista
+  </button>
+</ng-template>
+
+<ng-template [ngIf]="pageService.pageIsOn === 'login'">
+  <button
+    mat-fab
+    color="basic"
+    aria-label="Registrati"
+    (click)="(true)"
+    [routerLink]="['/signup']"
+    extended
+  >
+    <mat-icon>add_circle</mat-icon>
+    Crea account
+  </button>
+</ng-template>
+
+<ng-template [ngIf]="pageService.pageIsOn === 'signup'">
+  <button
+    mat-fab
+    color="basic"
+    aria-label="Login"
+    (click)="(true)"
+    [routerLink]="['/login']"
+    extended
+  >
+    <mat-icon>person</mat-icon>
+    Accedi
+  </button>
+</ng-template>

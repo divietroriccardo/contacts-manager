@@ -1,0 +1,70 @@
+<div class="card">
+  <div class="cardContent">
+    <mat-form-field *ngFor="let el of formElements" appearance="outline">
+      <mat-label>{{ el.label }}</mat-label>
+      <input
+        matInput
+        title="el.label"
+        placeholder=""
+        [formControl]="el.value"
+        [readonly]="
+          pageService.pageIsOn === 'details' ||
+          (!el.isEditable && pageService.pageIsOn === 'edit')
+        "
+      />
+      <mat-error *ngIf="el.value.invalid">{{
+        el.errorMessage(el.value.hasError("required") ? "required" : "type")
+      }}</mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="cardActions" *ngIf="pageService.pageIsOn === 'details'">
+    <button
+      mat-fab
+      color="basic"
+      aria-label="Modifica Contatto"
+      (click)="editForm()"
+      extended
+    >
+      <mat-icon>edit</mat-icon>
+      Modifica
+    </button>
+
+    <button
+      mat-fab
+      color="warn"
+      aria-label="Elimina Contatto"
+      (click)="deleteContact()"
+      extended
+    >
+      <mat-icon>delete</mat-icon>
+      Elimina
+    </button>
+  </div>
+
+  <div class="cardActions" *ngIf="pageService.pageIsOn === 'edit'">
+    <button
+      mat-fab
+      color="primary"
+      aria-label="Modifica Contatto"
+      (click)="editContact()"
+      extended
+    >
+      <mat-icon>edit</mat-icon>
+      Salva
+    </button>
+  </div>
+
+  <div class="cardActions" *ngIf="pageService.pageIsOn === 'add'">
+    <button
+      mat-fab
+      color="primary"
+      aria-label="Aggiungi Contatto"
+      (click)="addNewContact()"
+      extended
+    >
+      <mat-icon>add</mat-icon>
+      Aggiungi
+    </button>
+  </div>
+</div>

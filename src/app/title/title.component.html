@@ -1,0 +1,13 @@
+<button
+  mat-mini-fab
+  [color]="getColor()"
+  *ngIf="pageService.pageIsOn === 'details'"
+  aria-label="Favorite"
+  (click)="getStar()"
+>
+  <mat-icon>star</mat-icon>
+</button>
+
+<h1>
+  {{ getTitle() }}
+</h1>

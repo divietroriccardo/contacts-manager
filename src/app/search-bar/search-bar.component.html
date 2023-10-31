@@ -1,0 +1,14 @@
+<mat-form-field
+  *ngIf="pageService.pageIsOn === 'list' || pageService.pageIsOn === 'search'"
+>
+  <mat-label>Cerca</mat-label>
+  <input matInput title="search" placeholder="" [(ngModel)]="search" />
+  <button
+    mat-icon-button
+    matSuffix
+    (click)="searching()"
+    [routerLink]="search ? ['/search', search] : ['/contacts']"
+  >
+    <mat-icon>search</mat-icon>
+  </button>
+</mat-form-field>

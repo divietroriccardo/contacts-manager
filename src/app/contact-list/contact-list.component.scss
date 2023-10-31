@@ -1,0 +1,24 @@
+.container
+{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    place-content: center;
+}
+
+.result
+{
+    width: 100%;
+}
+
+mat-list-item:hover
+{
+    background-color: #D1C4E9
+}
+
+.contact
+{
+    width: 20rem;
+    border-radius: 9999px;
+}

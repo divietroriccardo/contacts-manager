@@ -1,0 +1,113 @@
+<div class="signup">
+  <mat-form-field>
+    <mat-label>Nome utente</mat-label>
+    <mat-icon matPrefix>person</mat-icon>
+    <input
+      matInput
+      title="username"
+      placeholder=""
+      [formControl]="username"
+      required
+    />
+    <mat-error *ngIf="username.invalid">{{
+      getErrorMessage("username")
+    }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Email</mat-label>
+    <mat-icon matPrefix>email</mat-icon>
+    <input
+      matInput
+      title="email"
+      placeholder=""
+      [formControl]="email"
+      required
+    />
+    <mat-error *ngIf="email.invalid">{{ getErrorMessage("email") }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Numero di telefono</mat-label>
+    <mat-icon matPrefix>phone</mat-icon>
+    <input
+      matInput
+      title="phone number"
+      placeholder=""
+      [formControl]="phoneNumber"
+      required
+    />
+    <mat-error *ngIf="phoneNumber.invalid">{{
+      getErrorMessage("phoneNumber")
+    }}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Password</mat-label>
+    <mat-icon matPrefix>password</mat-icon>
+    <input
+      matInput
+      title="password"
+      placeholder=""
+      [type]="isPasswordHidden ? 'password' : 'text'"
+      [formControl]="password"
+      required
+    />
+    <mat-error *ngIf="password.invalid">{{
+      getErrorMessage("password")
+    }}</mat-error>
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="isPasswordHidden = !isPasswordHidden"
+      [attr.aria-label]="'Nascondi password'"
+      [attr.aria-pressed]="isPasswordHidden"
+    >
+      <mat-icon>{{
+        isPasswordHidden ? "visibility_off" : "visibility"
+      }}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Conferma password</mat-label>
+    <mat-icon matPrefix>password</mat-icon>
+    <input
+      matInput
+      title="repeated password"
+      placeholder=""
+      [type]="isRepeatedPasswordHidden ? 'password' : 'text'"
+      [formControl]="repeatedPassword"
+      required
+    />
+    <mat-error
+      *ngIf="
+        repeatedPassword.invalid
+      "
+      >{{ getErrorMessage("repeatedPassword") }}</mat-error
+    >
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="isRepeatedPasswordHidden = !isRepeatedPasswordHidden"
+      [attr.aria-label]="'Nascondi password'"
+      [attr.aria-pressed]="isRepeatedPasswordHidden"
+    >
+      <mat-icon>{{
+        isRepeatedPasswordHidden ? "visibility_off" : "visibility"
+      }}</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <button
+    mat-fab
+    class="signup-button"
+    color="primary"
+    aria-label="Accedi"
+    (click)="signup()"
+    extended
+  >
+    <mat-icon>add</mat-icon>
+    Registrati
+  </button>
+</div>

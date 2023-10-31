@@ -1,0 +1,43 @@
+<div class="container" [ngSwitch]="contactService.status">
+  <div class="result" *ngSwitchCase="'success'">
+    <mat-list *ngIf="!(contactList.length === 0); else noData">
+      <button mat-mini-fab color="basic" (click)="getSort()">
+        <mat-icon>swap_horiz</mat-icon>
+      </button>
+      <mat-list-item *ngFor="let contact of contactList">
+        <button
+          class="contact"
+          mat-flat-button
+          color="primary"
+          extended
+          [id]="contact._id"
+          [routerLink]="['/details', contact._id]"
+        >
+          <mat-icon color="accent" *ngIf="contact.isFavorite">star</mat-icon>
+          {{
+            !isVisualizationChanged
+              ? contact.firstName + " " + contact.lastName
+              : contact.lastName + " " + contact.firstName
+          }}
+        </button>
+      </mat-list-item>
+    </mat-list>
+
+    <ng-template #noData>
+      <h3 *ngIf="search; else noResult">
+        Nessun risultato trovato per "{{ search }}"
+      </h3>
+      <ng-template #noResult>
+        <h3>Nessun Contatto</h3>
+      </ng-template>
+    </ng-template>
+  </div>
+
+  <div class="loading" *ngSwitchCase="'loading'">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div class="error" *ngSwitchCase="'error'">
+    <h3>ERRORE!</h3>
+  </div>
+</div>
