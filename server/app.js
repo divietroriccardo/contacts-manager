@@ -54,14 +54,22 @@ app.post("/api/signup", async (req, res) => {
         password: req.body.password,
       });
 
-      bcrypt.genSalt(saltRounds, function (err, salt) {
-          bcrypt.hash(newUser.password, salt, function (err, hash) {
-            if (err) return next(err);
-            newUser.password = hash;
-            newUser.save();
+      bcrypt.genSalt(saltRounds).then(() => {
+        bcrypt
+          .hash(newUser.password, saltRounds)
+          .then((hashedPassword) => {
+            newUser.password = hashedPassword;
+            return newUser.save();
+          })
+          .then(() => {
+            res.send();
+          })
+          .catch((error) => {
+            console.log("Error saving user: ");
+            console.log(error);
+            next();
           });
-      })
-
+      });
 
       return res.status(200).json({
         status: "success",
@@ -72,7 +80,6 @@ app.post("/api/signup", async (req, res) => {
     return res.status(400).json({
       status: "fail",
       data: "Signup error",
-      error: err.message,
     });
   }
 });
@@ -80,15 +87,6 @@ app.post("/api/signup", async (req, res) => {
 app.post("/api/login", async (req, res) => {
   try {
     await mongoose.connect(url);
-
-    const password = (User.methods.validatePassword =
-      async function validatePassword(data) {
-        return bcrypt.compare(data, this.password);
-      });
-
-    module.exports = mongoose.model("User", UserSchema);
-
-    console.log("PASSWORD", password);
 
     const username = await User.findOne({
       username: req.body.user,
