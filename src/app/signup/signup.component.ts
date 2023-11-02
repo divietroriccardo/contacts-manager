@@ -16,6 +16,8 @@ export class SignupComponent {
   isPasswordHidden: boolean = true;
   isRepeatedPasswordHidden: boolean = true;
 
+  showDetails: boolean = false;
+
   username = new FormControl('', [
     Validators.required,
     Validators.pattern('[0-9A-Za-z_.]{6,16}$'),
@@ -27,9 +29,7 @@ export class SignupComponent {
   email = new FormControl('', [Validators.required, Validators.email]);
   password = new FormControl('', [
     Validators.required,
-    Validators.pattern(
-      '^(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[^0-9A-Za-z]).{8,}$'
-    ),
+    Validators.minLength(8),
   ]);
   repeatedPassword = new FormControl('', [Validators.required]);
 
@@ -91,7 +91,6 @@ export class SignupComponent {
         } else {
           return 'Username non valido';
         }
-        break;
 
       case 'email':
         if (this.email.hasError('required')) {
@@ -99,7 +98,6 @@ export class SignupComponent {
         } else {
           return 'Email non valida';
         }
-        break;
 
       case 'phoneNumber':
         if (this.phoneNumber.hasError('required')) {
@@ -107,35 +105,19 @@ export class SignupComponent {
         } else {
           return 'Numero di telefono valido';
         }
-        break;
 
       case 'repeatedPassword':
         return 'Ripeti la password';
-        break;
 
       case 'password':
         if (this.password.hasError('required')) {
           return 'Inserisci una password';
         } else {
-          if (!this.password.value?.match(/.*?[0-9]/)) {
-            return 'La password deve contenere almeno un numero';
-          } else if (!this.password.value?.match(/.*?[A-Z]/)) {
-            return 'La password deve contenere almeno una lettera maiuscola';
-          } else if (!this.password.value?.match(/.*?[a-z]/)) {
-            return 'La password deve contenere almeno una lettera minuscola';
-          } else if (!this.password.value?.match(/.*?[^0-9A-Za-z]/)) {
-            return 'La password deve contenere almeno una carattere speciale';
-          } else if ((this.password.value?.length || 0) < 8) {
-            return 'La password è troppo corta';
-          } else {
-            return '';
-          }
+          return 'La password è troppo corta';
         }
-        break;
 
       default:
         return '';
-        break;
     }
   }
 
@@ -144,7 +126,7 @@ export class SignupComponent {
       !this.username.hasError('required') &&
       !this.username.hasError('pattern') &&
       !this.password.hasError('required') &&
-      !this.password.hasError('pattern') &&
+      !this.password.hasError('minlenght') &&
       !this.repeatedPassword.hasError('required') &&
       !this.email.hasError('required') &&
       !this.email.hasError('email') &&

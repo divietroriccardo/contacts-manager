@@ -10,6 +10,8 @@ import { TitleComponent } from './title/title.component';
 import { ButtonComponent } from './button/button.component';
 import { DialogComponent } from './dialog/dialog.component';
 import { ContactFormComponent } from './contact-form/contact-form.component';
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDividerModule } from '@angular/material/divider';
@@ -27,9 +29,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatPasswordStrengthModule } from "@angular-material-extensions/password-strength";
 import { NgIf } from '@angular/common';
-import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -63,6 +64,7 @@ import { SignupComponent } from './signup/signup.component';
     MatDialogModule,
     MatSlideToggleModule,
     MatProgressSpinnerModule,
+    MatPasswordStrengthModule,
     NgIf,
   ],
   providers: [],
