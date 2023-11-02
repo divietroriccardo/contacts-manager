@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { FormControl, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { PageService } from './../page.service';
 import { UserService } from '../user.service';
+import { SnackbarService } from '../snackbar.service';
 
 @Component({
   selector: 'app-login',
@@ -14,14 +14,14 @@ import { UserService } from '../user.service';
 })
 export class LoginComponent implements OnInit {
   isHidden: boolean = true;
-  user = new FormControl('', [Validators.required]);
-  password = new FormControl('', [Validators.required]);
+  user = new FormControl('rickrick', [Validators.required]);
+  password = new FormControl('Rick123$', [Validators.required]);
 
   constructor(
     private router: Router,
     private pageService: PageService,
     private userService: UserService,
-    private snackBar: MatSnackBar
+    private snackBar: SnackbarService
   ) {}
 
   ngOnInit() {
@@ -36,13 +36,17 @@ export class LoginComponent implements OnInit {
         .login(this.user.value || '', this.password.value || '')
         .subscribe({
           next: (resp) => {
-            this.snackBarFunction('Accesso effettuato');
+            this.snackBar.open('Accesso effettuato');
 
             this.router.navigate(['/contacts']);
           },
           error: (err) => {
-            this.snackBarFunction('Sbagliato. Prova di nuovo');
-            console.log(err);
+            if (err.status == 400) {
+              this.snackBar.open('Errore del server! Riprova più tardi');
+            } else {
+              this.snackBar.open('Sbagliato. Prova di nuovo');
+              console.log(err);
+            }
           },
         });
     }
@@ -55,15 +59,9 @@ export class LoginComponent implements OnInit {
     ) {
       return true;
     } else {
-      this.snackBarFunction('Inserire tutti i campi correttamente');
+      this.snackBar.open('Inserire tutti i campi correttamente');
 
       return false;
     }
-  }
-
-  snackBarFunction(text: string): void {
-    this.snackBar.open(text, 'Rimuovi', {
-      duration: 3000,
-    });
   }
 }

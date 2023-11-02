@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
 
 import { PageService } from './../page.service';
 import { ContactFormService } from '../contact-form.service';
 import { ContactService } from '../contact.service';
 import { DialogService } from './../dialog.service';
+import { SnackbarService } from '../snackbar.service';
 
-import { DialogComponent } from '../dialog/dialog.component';
 import { Contacts } from '../contacts';
 
 @Component({
@@ -49,7 +50,7 @@ export class ContactFormComponent implements OnInit {
     public pageService: PageService,
     private formService: ContactFormService,
     private contactService: ContactService,
-    private snackBar: MatSnackBar,
+    private snackBar: SnackbarService,
     private router: Router,
     private route: ActivatedRoute,
     private dialogService: DialogService,
@@ -93,7 +94,7 @@ export class ContactFormComponent implements OnInit {
       if (result) {
         this.contactService.deleteContact(this.id).subscribe({
           next: () => {
-            this.snackBarFunction(
+            this.snackBar.open(
               `Il contatto ${this.contact.firstName} ${this.contact.lastName} è stato eliminato`
             );
             this.router.navigate(['/contacts']);
@@ -120,14 +121,14 @@ export class ContactFormComponent implements OnInit {
         .subscribe({
           next: (resp) => {
             if (resp != 'Phone number already exist') {
-              this.snackBarFunction(
+              this.snackBar.open(
                 `Il contatto ${resp.firstName} ${resp.lastName} 
                 è stato aggiunto`
               );
 
               this.router.navigate(['/contacts']);
             } else {
-              this.snackBarFunction(
+              this.snackBar.open(
                 `Il numero ${
                   this.getValue('phoneNumber')?.value
                 } è stato già inserito`
@@ -166,7 +167,7 @@ export class ContactFormComponent implements OnInit {
         )
         .subscribe({
           next: (resp) => {
-            this.snackBarFunction(
+            this.snackBar.open(
               `Il contatto ${this.getValue('firstName')?.value} ${
                 this.getValue('lastName')?.value
               } è stato modificato`
@@ -192,16 +193,10 @@ export class ContactFormComponent implements OnInit {
     ) {
       return true;
     } else {
-      this.snackBarFunction('Inserire tutti i campi correttamente');
+      this.snackBar.open('Inserire tutti i campi correttamente');
 
       return false;
     }
-  }
-
-  snackBarFunction(text: string): void {
-    this.snackBar.open(text, 'Rimuovi', {
-      duration: 3000,
-    });
   }
 
   getValue(typeToFind: string) {
