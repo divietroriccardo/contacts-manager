@@ -1,14 +1,14 @@
-<div class="signup">
+<div class="signup" [formGroup]="signupFields">
   <mat-form-field appearance="outline" hideRequiredMarker="true">
     <mat-label>Nome utente</mat-label>
     <mat-icon matPrefix>person</mat-icon>
     <input
       matInput
       title="username"
-      [formControl]="username"
+      formControlName="username"
       required
     />
-    <mat-error *ngIf="username.invalid">{{
+    <mat-error *ngIf="signupFields.get('username')?.invalid">{{
       getErrorMessage("username")
     }}</mat-error>
   </mat-form-field>
@@ -19,10 +19,10 @@
     <input
       matInput
       title="email"
-      [formControl]="email"
+      formControlName="email"
       required
     />
-    <mat-error *ngIf="email.invalid">{{ getErrorMessage("email") }}</mat-error>
+    <mat-error *ngIf="signupFields.get('email')?.invalid">{{ getErrorMessage("email") }}</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="outline" hideRequiredMarker="true">
@@ -31,10 +31,10 @@
     <input
       matInput
       title="phone number"
-      [formControl]="phoneNumber"
+      formControlName="phoneNumber"
       required
     />
-    <mat-error *ngIf="phoneNumber.invalid" hideRequiredMarker="true">{{
+    <mat-error *ngIf="signupFields.get('phoneNumber')?.invalid">{{
       getErrorMessage("phoneNumber")
     }}</mat-error>
   </mat-form-field>
@@ -47,15 +47,15 @@
       matInput
       title="password"
       [type]="toggle.type"
-      [formControl]="password"
+      formControlName="password"
       (focus)="showDetails = !showDetails"
       (blur)="showDetails = !showDetails"
       required
     />
-    <mat-password-strength #passwordComponent [password]="password.value || ''">
+    <mat-password-strength #passwordComponent [password]="signupFields.value.password || ''">
     </mat-password-strength>
 
-    <mat-error *ngIf="password.invalid">{{
+    <mat-error *ngIf="signupFields.get('password')?.invalid">{{
       getErrorMessage("password")
     }}</mat-error>
   </mat-form-field>
@@ -79,10 +79,10 @@
       matInput
       title="repeated password"
       [type]="isRepeatedPasswordHidden ? 'password' : 'text'"
-      [formControl]="repeatedPassword"
+      formControlName="repeatedPassword"
       required
     />
-    <mat-error *ngIf="repeatedPassword.invalid">{{
+    <mat-error *ngIf="signupFields.get('repeatedPassword')?.invalid">{{
       getErrorMessage("repeatedPassword")
     }}</mat-error>
     <button
