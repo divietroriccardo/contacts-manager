@@ -1,4 +1,4 @@
-<div class="login">
+<div class="login" [formGroup]="loginFields">
   <mat-form-field>
     <mat-label>Numero, email o nome utente</mat-label>
     <mat-icon matPrefix>person</mat-icon>
@@ -6,10 +6,12 @@
       matInput
       title="number, email or username"
       placeholder=""
-      [formControl]="user"
+      formControlName="user"
       required
     />
-    <mat-error *ngIf="user.invalid">{{ "Inserisci il tuo username" }}</mat-error>
+    <mat-error *ngIf="loginFields.get('user')?.invalid">{{
+      "Inserisci il tuo username"
+    }}</mat-error>
   </mat-form-field>
 
   <mat-form-field>
@@ -20,17 +22,13 @@
       title="password"
       placeholder=""
       [type]="isHidden ? 'password' : 'text'"
-      [formControl]="password"
+      formControlName="password"
       required
     />
-    <mat-error *ngIf="password.invalid">{{ "Inserisci la password" }}</mat-error>
-    <button
-      mat-icon-button
-      matSuffix
-      (click)="isHidden = !isHidden"
-      [attr.aria-label]="'Nascondi password'"
-      [attr.aria-pressed]="isHidden"
-    >
+    <mat-error *ngIf="loginFields.get('password')?.invalid">{{
+      "Inserisci la password"
+    }}</mat-error>
+    <button mat-icon-button matSuffix (click)="isHidden = !isHidden">
       <mat-icon>{{ isHidden ? "visibility_off" : "visibility" }}</mat-icon>
     </button>
   </mat-form-field>
@@ -39,7 +37,6 @@
     mat-fab
     class="login-button"
     color="primary"
-    aria-label="Accedi"
     (click)="login()"
     extended
   >

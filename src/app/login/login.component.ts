@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { PageService } from './../page.service';
 import { UserService } from '../user.service';
@@ -14,8 +14,11 @@ import { SnackbarService } from '../snackbar.service';
 })
 export class LoginComponent implements OnInit {
   isHidden: boolean = true;
-  user = new FormControl('rickrick', [Validators.required]);
-  password = new FormControl('Rick123$', [Validators.required]);
+
+  loginFields = new FormGroup({
+    user: new FormControl('rickrick', [Validators.required]),
+    password: new FormControl('Rick123$', [Validators.required])
+  })
 
   constructor(
     private router: Router,
@@ -31,9 +34,9 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    if (this.isAllRight()) {
+    if (!this.loginFields.invalid) {
       this.userService
-        .login(this.user.value || '', this.password.value || '')
+        .login(this.loginFields.value.user || '', this.loginFields.value.password || '')
         .subscribe({
           next: (resp) => {
             this.snackBar.open('Accesso effettuato');
@@ -50,9 +53,13 @@ export class LoginComponent implements OnInit {
           },
         });
     }
+    else
+    {
+      this.snackBar.open('Inserire tutti i campi correttamente');
+    }
   }
 
-  isAllRight() {
+  /* isAllRight() {
     if (
       !this.user.hasError('required') &&
       !this.password.hasError('required')
@@ -63,5 +70,5 @@ export class LoginComponent implements OnInit {
 
       return false;
     }
-  }
+  } */
 }
