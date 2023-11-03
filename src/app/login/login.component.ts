@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/contacts']);
           },
           error: (err) => {
-            if (err.status == 400) {
+            if (err.status === 400) {
               this.snackBar.open('Errore del server! Riprova più tardi');
             } else {
               this.snackBar.open('Sbagliato. Prova di nuovo');
@@ -58,17 +58,4 @@ export class LoginComponent implements OnInit {
       this.snackBar.open('Inserire tutti i campi correttamente');
     }
   }
-
-  /* isAllRight() {
-    if (
-      !this.user.hasError('required') &&
-      !this.password.hasError('required')
-    ) {
-      return true;
-    } else {
-      this.snackBar.open('Inserire tutti i campi correttamente');
-
-      return false;
-    }
-  } */
 }

@@ -62,15 +62,15 @@ export class SignupComponent {
         )
         .subscribe({
           next: (resp) => {
-            if (resp == 'Username already exist') {
+            if (resp === 'Username already exist') {
               this.snackBar.open(
                 'Questo nome utente non è disponibile. Prova con un altro'
               );
-            } else if (resp == 'Email already exist') {
+            } else if (resp === 'Email already exist') {
               this.snackBar.open(
                 'Un altro account usa lo stesso indirizzo email'
               );
-            } else if (resp == 'Phone number already exist') {
+            } else if (resp === 'Phone number already exist') {
               this.snackBar.open(
                 'Un altro account usa lo stesso numero di telefono'
               );
@@ -86,7 +86,7 @@ export class SignupComponent {
           },
         });
     } else {
-      this.signupFields.value.password ==
+      this.signupFields.value.password ===
         this.signupFields.value.repeatedPassword ||
       this.signupFields.get('repeatedPassword')?.invalid
         ? this.snackBar.open('Inserire tutti i campi correttamente')
