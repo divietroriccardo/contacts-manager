@@ -59,18 +59,19 @@ app.post("/api/signup", async (req, res) => {
           .hash(newUser.password, saltRounds)
           .then((hashedPassword) => {
             newUser.password = hashedPassword;
-            return newUser.save();
+            newUser.save();
           })
-          .then(() => res.send())
+          .then(() => {
+            return res.status(200).json({
+              status: "success",
+              data: newUser,
+            });
+          })
+
           .catch((error) => {
             console.log("Error saving user: ");
             console.log(error);
           });
-      });
-
-      return res.status(200).json({
-        status: "success",
-        data: newUser,
       });
     }
   } catch {
@@ -85,6 +86,8 @@ app.post("/api/login", async (req, res) => {
   try {
     await mongoose.connect(url);
 
+    key = "";
+
     const username = await User.findOne({
       username: req.body.user,
     });
@@ -96,80 +99,37 @@ app.post("/api/login", async (req, res) => {
     });
 
     if (username) {
-      User.findOne({ username: req.body.user })
-        .then((user) => bcrypt.compare(req.body.password, user.password))
-        .then((samePassword) =>
-          !samePassword
-            ? res.status(401).json({
-                status: "fail",
-                data: "Login error",
-              })
-            : res.status(200).json({
-                status: "success",
-                data: "Login",
-              })
-        )
-        .catch((error) => {
-          res.status(401).json({
-            status: "fail",
-            data: "Login error",
-          });
-
-          console.log("Error authenticating user: ");
-          console.log(error);
-        });
+      key = "username";
     } else if (email) {
-      User.findOne({ email: req.body.user })
-        .then((user) => bcrypt.compare(req.body.password, user.password))
-        .then((samePassword) =>
-          !samePassword
-            ? res.status(401).json({
-                status: "fail",
-                data: "Login error",
-              })
-            : res.status(200).json({
-                status: "success",
-                data: "Login",
-              })
-        )
-        .catch((error) => {
-          res.status(401).json({
-            status: "fail",
-            data: "Login error",
-          });
-
-          console.log("Error authenticating user: ");
-          console.log(error);
-        });
+      key = "email";
     } else if (phoneNumber) {
-      User.findOne({ phoneNumber: req.body.user })
-        .then((user) => bcrypt.compare(req.body.password, user.password))
-        .then((samePassword) =>
-          !samePassword
-            ? res.status(401).json({
-                status: "fail",
-                data: "Login error",
-              })
-            : res.status(200).json({
-                status: "success",
-                data: "Login",
-              })
-        )
-        .catch((error) => {
-          res.status(401).json({
-            status: "fail",
-            data: "Login error",
-          });
-
-          console.log("Error authenticating user: ");
-          console.log(error);
-        });
-    } else {
-      return res.status(401).json({
-        status: "fail",
-        data: "Login error",
-      });
+      key = "phoneNumber";
     }
+
+    User.findOne({ [key]: req.body.user })
+      .then((user) => 
+        bcrypt.compare(req.body.password, user.password)
+      )
+      .then((samePassword) =>
+        !samePassword
+          ? res.status(401).json({
+              status: "fail",
+              data: "Login error",
+            })
+          : res.status(200).json({
+              status: "success",
+              data: "Login",
+            })
+      )
+      .catch((error) => {
+        res.status(401).json({
+          status: "fail",
+          data: "Login error",
+        });
+
+        console.log("Error authenticating user: ");
+        console.log(error);
+      });
   } catch {
     return res.status(400).json({
       status: "fail",
