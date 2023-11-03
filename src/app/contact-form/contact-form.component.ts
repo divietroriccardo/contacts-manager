@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
+import { FormControl, FormGroup } from '@angular/forms';
 
 import { PageService } from './../page.service';
 import { ContactFormService } from '../contact-form.service';
@@ -18,6 +19,7 @@ import { Contacts } from '../contacts';
   styleUrls: ['./contact-form.component.scss'],
 })
 export class ContactFormComponent implements OnInit {
+  formFields = new FormGroup({});
   formElements: any = [];
   elementsInAddForm: string[] = [
     'firstName',
@@ -49,7 +51,7 @@ export class ContactFormComponent implements OnInit {
   constructor(
     public pageService: PageService,
     private formService: ContactFormService,
-    private contactService: ContactService,
+    public contactService: ContactService,
     private snackBar: SnackbarService,
     private router: Router,
     private route: ActivatedRoute,
@@ -62,27 +64,30 @@ export class ContactFormComponent implements OnInit {
       this.pageService.titlePage = 'Aggiungi Contatto';
 
       this.pageService.pageIsOn = 'add';
+
       this.formElements = this.formService.elements.filter(({ type: id1 }) =>
         this.elementsInAddForm.some((id2) => id2 === id1)
       );
+
+      this.formElements.map((el: any) => {
+        this.formFields.addControl(
+          el.type,
+          new FormControl('', !!el.validators ? el.validators : [])
+        );
+      });
     } else {
       this.id = this.route.snapshot.paramMap.get('id') || '';
       this.getContact();
 
       this.pageService.pageIsOn = 'details';
-
       this.pageService.id = this.id;
-
-      this.formElements = this.formService.elements.filter(({ type: id1 }) =>
-        this.elementsInDetailsForm.some((id2) => id2 === id1)
-      );
     }
   }
 
   deleteContact(): void {
     this.dialogService.setMessage(
-      `Confermi di voler eliminare ${this.getValue('firstName')?.value} ${
-        this.getValue('lastName')?.value
+      `Confermi di voler eliminare ${this.getValue('firstName').value} ${
+        this.getValue('lastName').value
       }?`,
       'Elimina contatto',
       'Annulla'
@@ -108,15 +113,15 @@ export class ContactFormComponent implements OnInit {
   }
 
   addNewContact(): void {
-    if (this.isAllRight()) {
+    if (!this.formFields.invalid) {
       this.contactService
         .addNewContact(
-          this.getValue('firstName')?.value || '',
-          this.getValue('lastName')?.value || '',
-          this.getValue('phoneNumber')?.value || '',
-          this.getValue('email')?.value || '',
-          this.getValue('addressCity')?.value || '',
-          this.getValue('addressStreet')?.value || ''
+          this.formFields.get('firstName')?.value || '',
+          this.formFields.get('lastName')?.value || '',
+          this.formFields.get('phoneNumber')?.value || '',
+          this.formFields.get('email')?.value || '',
+          this.formFields.get('addressCity')?.value || '',
+          this.formFields.get('addressStreet')?.value || ''
         )
         .subscribe({
           next: (resp) => {
@@ -130,7 +135,7 @@ export class ContactFormComponent implements OnInit {
             } else {
               this.snackBar.open(
                 `Il numero ${
-                  this.getValue('phoneNumber')?.value
+                  this.formFields.get('phoneNumber')?.value
                 } è stato già inserito`
               );
             }
@@ -139,6 +144,8 @@ export class ContactFormComponent implements OnInit {
             console.log(err);
           },
         });
+    } else {
+      this.snackBar.open('Inserire tutti i campi correttamente');
     }
   }
 
@@ -150,26 +157,28 @@ export class ContactFormComponent implements OnInit {
     this.formElements = this.formService.elements.filter(({ type: id1 }) =>
       this.elementsInAddForm.some((id2) => id2 === id1)
     );
+
+    this.loadFormGroup();
   }
 
   editContact(): void {
-    if (this.isAllRight()) {
+    if (!this.formFields.invalid) {
       this.contactService
         .editContact(
           this.id,
-          this.getValue('firstName')?.value || '',
-          this.getValue('lastName')?.value || '',
-          this.getValue('phoneNumber')?.value || '',
-          this.getValue('email')?.value || '',
-          this.getValue('addressCity')?.value || '',
-          this.getValue('addressStreet')?.value || '',
+          this.formFields.get('firstName')?.value || '',
+          this.formFields.get('lastName')?.value || '',
+          this.formFields.get('phoneNumber')?.value || '',
+          this.formFields.get('email')?.value || '',
+          this.formFields.get('addressCity')?.value || '',
+          this.formFields.get('addressStreet')?.value || '',
           this.contact.isFavorite || false
         )
         .subscribe({
           next: (resp) => {
             this.snackBar.open(
-              `Il contatto ${this.getValue('firstName')?.value} ${
-                this.getValue('lastName')?.value
+              `Il contatto ${this.getValue('firstName').value} ${
+                this.getValue('lastName').value
               } è stato modificato`
             );
 
@@ -179,50 +188,53 @@ export class ContactFormComponent implements OnInit {
             console.log(err);
           },
         });
-    }
-  }
-
-  isAllRight(): boolean {
-    if (
-      !this.getValue('firstName')?.hasError('required') &&
-      !this.getValue('lastName')?.hasError('required') &&
-      !this.getValue('phoneNumber')?.hasError('required') &&
-      !this.getValue('phoneNumber')?.hasError('pattern') &&
-      !this.getValue('email')?.hasError('required') &&
-      !this.getValue('email')?.hasError('email')
-    ) {
-      return true;
     } else {
       this.snackBar.open('Inserire tutti i campi correttamente');
-
-      return false;
     }
-  }
-
-  getValue(typeToFind: string) {
-    return this.formService.elements.find(({ type: el }) => el == typeToFind)
-      ?.value;
   }
 
   getContact() {
     this.contactService.getContact(this.id).subscribe({
       next: (resp) => {
         this.contact = resp;
-        this.getValue('firstName')?.setValue(this.contact.firstName || '');
-        this.getValue('lastName')?.setValue(this.contact.lastName || '');
-        this.getValue('phoneNumber')?.setValue(this.contact.phoneNumber || '');
-        this.getValue('email')?.setValue(this.contact.email || '');
-        this.getValue('addressCity')?.setValue(this.contact.addressCity || '');
-        this.getValue('addressStreet')?.setValue(
-          this.contact.addressStreet || ''
-        );
+        this.getValue('firstName').value = this.contact.firstName || '';
+        this.getValue('lastName').value = this.contact.lastName || '';
+        this.getValue('phoneNumber').value = this.contact.phoneNumber || '';
+        this.getValue('email').value = this.contact.email || '';
+        this.getValue('addressCity').value = this.contact.addressCity || '';
+        this.getValue('addressStreet').value = this.contact.addressStreet || '';
 
         this.pageService.titlePage = `${this.contact.firstName} ${this.contact.lastName}`;
         this.pageService.isFavoriteContact = this.contact.isFavorite;
+
+        this.formElements = this.formService.elements.filter(({ type: id1 }) =>
+          this.elementsInDetailsForm.some((id2) => id2 === id1)
+        );
+
+        this.loadFormGroup();
+
+        this.contactService.status = 'success';
       },
       error: (err) => {
         console.log(err);
       },
     });
+  }
+
+  getValue(typeToFind: string) {
+    return (
+      this.formService.elements.find(({ type: el }) => el == typeToFind) || {
+        value: '',
+      }
+    );
+  }
+
+  loadFormGroup() {
+    this.formElements.map((el: any) =>
+      this.formFields.addControl(
+        el.type,
+        new FormControl(el.value, !!el.validators ? el.validators : [])
+      )
+    );
   }
 }

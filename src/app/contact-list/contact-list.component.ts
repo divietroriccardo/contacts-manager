@@ -35,8 +35,6 @@ export class ContactListComponent implements OnInit {
       .subscribe((res) => {
         this.getList(res || '');
       });
-
-    this.formService.elements.map((el) => el.value.reset());
   }
 
   getList(searchValue: string) {

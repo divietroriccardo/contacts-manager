@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Contacts } from './contacts';
 import { HttpClient } from '@angular/common/http';
-import { filter, tap, map } from 'rxjs';
+import { filter, tap, map, delay } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -43,6 +43,7 @@ export class ContactService {
     this.status = 'loading';
 
     return this.http.get<any>(`${this.baseURL}/details/${idContact}`).pipe(
+      delay(100),
       tap((resp) => {
         if (resp.status === 'fail') {
           throw new TypeError(`Error`);

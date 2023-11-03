@@ -11,8 +11,8 @@ export class ContactFormService {
     {
       type: "firstName",
       label: "Nome",
-      value: new FormControl("", [Validators.required]),
-      placeholder: "es. Mario",
+      value: "",
+      validators: [Validators.required],
       errorMessage: (error: string) => "Inserisci il nome",
       isEditable: true
     },
@@ -20,8 +20,8 @@ export class ContactFormService {
     {
       type: "lastName",
       label: "Cognome",
-      value: new FormControl("", [Validators.required]),
-      placeholder: "es. Rossi",
+      value: "",
+      validators: [Validators.required],
       errorMessage: (error: string) => "Inserisci il cognome",
       isEditable: true
     },
@@ -29,34 +29,32 @@ export class ContactFormService {
     {
       type: "phoneNumber",
       label: "Numero di telefono",
-      value: new FormControl("", [Validators.required, Validators.pattern("[- +()0-9]+")]),
-      placeholder: "es. 3331234567",
-      errorMessage: (error: string) => error == "type" ? "Numero di telefono non valido" : "Inserisci il numero di telefono",
+      value: "",
+      validators: [Validators.required, Validators.pattern("[- +()0-9]+")],
+      errorMessage: (error: string) => error === "type" ? "Numero di telefono non valido" : "Inserisci il numero di telefono",
       isEditable: false
     },
 
     {
       type: "email",
       label: "Email",
-      value: new FormControl("", [Validators.required, Validators.email]),
-      placeholder: "esempio@gmail.com",
-      errorMessage: (error: string) => error == "type" ? "Email non valida" : "Inserisci la email",
+      value: "",
+      validators: [Validators.required, Validators.email],
+      errorMessage: (error: string) => error === "type" ? "Email non valida" : "Inserisci la email",
       isEditable: true
     },
-
+    
     {
       type: "addressCity",
       label: "Città",
-      value: new FormControl(""),
-      placeholder: "es. Roma",
+      value: "",
       isEditable: true
     },
-
+    
     {
       type: "addressStreet",
       label: "Indirizzo",
-      value: new FormControl(""),
-      placeholder: "es. via Giuseppe Garibaldi, 01",
+      value: "",
       isEditable: true
     }
   ]

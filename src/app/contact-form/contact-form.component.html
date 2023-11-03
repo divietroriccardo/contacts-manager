@@ -1,19 +1,20 @@
-<div class="card">
-  <div class="cardContent">
+<div class="card" *ngIf="contactService.status !== 'loading'">
+  <div class="cardContent" [formGroup]="formFields">
     <mat-form-field *ngFor="let el of formElements" appearance="outline">
       <mat-label>{{ el.label }}</mat-label>
       <input
         matInput
         title="el.label"
-        placeholder=""
-        [formControl]="el.value"
+        [formControlName]="el.type"
         [readonly]="
           pageService.pageIsOn === 'details' ||
           (!el.isEditable && pageService.pageIsOn === 'edit')
         "
       />
-      <mat-error *ngIf="el.value.invalid">{{
-        el.errorMessage(el.value.hasError("required") ? "required" : "type")
+      <mat-error *ngIf="formFields.get(el.type)?.invalid">{{
+        el.errorMessage(
+          formFields.get(el.type)?.hasError("required") ? "required" : "type"
+        )
       }}</mat-error>
     </mat-form-field>
   </div>
@@ -67,4 +68,8 @@
       Aggiungi
     </button>
   </div>
+</div>
+
+<div class="loading" *ngIf="contactService.status === 'loading'">
+  <mat-spinner></mat-spinner>
 </div>
