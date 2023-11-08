@@ -23,8 +23,8 @@ const canActivateFn: CanActivateFn = (
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/login',
     pathMatch: 'full',
+    redirectTo: '/login',
   },
 
   {
@@ -36,16 +36,19 @@ const routes: Routes = [
   {
     path: 'search/:searchValue',
     component: ContactListComponent,
+    canActivate: [canActivateFn],
   },
 
   {
     path: 'details/:id',
     component: ContactFormComponent,
+    canActivate: [canActivateFn],
   },
 
   {
     path: 'newContact',
     component: ContactFormComponent,
+    canActivate: [canActivateFn],
   },
 
   {
