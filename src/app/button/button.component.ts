@@ -15,6 +15,7 @@ import { DialogComponent } from '../dialog/dialog.component';
   styleUrls: ['./button.component.scss'],
 })
 export class ButtonComponent {
+  isButtonFocussed: boolean = false
   isAccountFocussed: boolean = false;
   isMenuOpen: boolean = false;
 

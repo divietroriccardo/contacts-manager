@@ -1,88 +1,98 @@
-<ng-template
-  [ngIf]="pageService.pageIsOn === 'list' || pageService.pageIsOn === 'search'"
->
-  <button
-    mat-fab
-    color="basic"
-    [routerLink]="['/newContact']"
-    aria-label="Aggiungi Contatto"
-    extended
+<div class="buttons">
+  <ng-template
+    [ngIf]="pageService.pageIsOn === 'list' || pageService.pageIsOn === 'search'"
   >
-    <mat-icon>person_add</mat-icon>
-    Aggiungi contatto
-  </button>
-</ng-template>
-
-<ng-template
-  [ngIf]="
-    pageService.pageIsOn === 'edit' ||
-    pageService.pageIsOn === 'add' ||
-    pageService.pageIsOn === 'details'
-  "
->
-  <button
-    mat-fab
-    color="basic"
-    (click)="openDialog()"
-    aria-label="Lista Contatti"
-    extended
-  >
-    <mat-icon>list</mat-icon>
-    Torna alla lista
-  </button>
-</ng-template>
-
-<ng-template [ngIf]="pageService.pageIsOn === 'login'">
-  <button
-    mat-fab
-    color="basic"
-    aria-label="Registrati"
-    [routerLink]="['/signup']"
-    extended
-  >
-    <mat-icon>add_circle</mat-icon>
-    Crea account
-  </button>
-</ng-template>
-
-<ng-template [ngIf]="pageService.pageIsOn === 'signup'">
-  <button
-    mat-fab
-    color="basic"
-    aria-label="Login"
-    [routerLink]="['/login']"
-    extended
-  >
-    <mat-icon>person</mat-icon>
-    Accedi
-  </button>
-</ng-template>
-
-<ng-template
-  [ngIf]="pageService.pageIsOn != 'login' && pageService.pageIsOn != 'signup'"
-  class="accountButton"
->
-  <button
-    mat-fab
-    color="basic"
-    [matMenuTriggerFor]="menu"
-    (menuOpened)="isMenuOpen = true"
-    (menuClosed)="isMenuOpen = false"
-    (mouseenter)="isAccountFocussed = true"
-    (mouseleave)="isAccountFocussed = false"
-    [extended]="isAccountFocussed || isMenuOpen"
-  >
-    <mat-icon>account_box</mat-icon>
-    {{ isAccountFocussed || isMenuOpen ? "Account" : "" }}
-  </button>
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item>
-      <mat-icon>settings</mat-icon>
-      <span>Impostazioni account</span>
+    <button
+      mat-fab
+      color="basic"
+      [routerLink]="['/newContact']"
+      aria-label="Aggiungi Contatto"
+      (mouseenter)="isButtonFocussed = true"
+      (mouseleave)="isButtonFocussed = false"
+      [extended]="isButtonFocussed"
+    >
+      <mat-icon>person_add</mat-icon>
+      {{ isButtonFocussed ? "Aggiungi" : "" }}
     </button>
-    <button mat-menu-item (click)="logout()">
-      <mat-icon color="warn">exit_to_app</mat-icon>
-      <span class="exit">Esci</span>
+  </ng-template>
+  
+  <ng-template
+    [ngIf]="
+      pageService.pageIsOn === 'edit' ||
+      pageService.pageIsOn === 'add' ||
+      pageService.pageIsOn === 'details'
+    "
+  >
+    <button
+      mat-fab
+      color="basic"
+      (click)="openDialog()"
+      aria-label="Lista Contatti"
+      (mouseenter)="isButtonFocussed = true"
+      (mouseleave)="isButtonFocussed = false"
+      [extended]="isButtonFocussed"
+    >
+      <mat-icon>list</mat-icon>
+      {{ isButtonFocussed ? "Lista" : "" }}
     </button>
-  </mat-menu>
-</ng-template>
+  </ng-template>
+  
+  <ng-template [ngIf]="pageService.pageIsOn === 'login'">
+    <button
+      mat-fab
+      color="basic"
+      aria-label="Registrati"
+      [routerLink]="['/signup']"
+      (mouseenter)="isButtonFocussed = true"
+      (mouseleave)="isButtonFocussed = false"
+      [extended]="isButtonFocussed"
+    >
+      <mat-icon>add_circle</mat-icon>
+      {{ isButtonFocussed ? "Crea account" : "" }}
+    </button>
+  </ng-template>
+  
+  <ng-template [ngIf]="pageService.pageIsOn === 'signup'">
+    <button
+      mat-fab
+      color="basic"
+      aria-label="Login"
+      [routerLink]="['/login']"
+      (mouseenter)="isButtonFocussed = true"
+      (mouseleave)="isButtonFocussed = false"
+      [extended]="isButtonFocussed"
+    >
+      <mat-icon>person</mat-icon>
+      {{ isButtonFocussed ? "Accedi" : "" }}
+    </button>
+  </ng-template>
+  
+  <ng-template
+    [ngIf]="pageService.pageIsOn != 'login' && pageService.pageIsOn != 'signup'"
+    class="accountButton"
+  >
+    <button
+      mat-fab
+      color="basic"
+      [matMenuTriggerFor]="menu"
+      (menuOpened)="isMenuOpen = true"
+      (menuClosed)="isMenuOpen = false"
+      (mouseenter)="isAccountFocussed = true"
+      (mouseleave)="isAccountFocussed = false"
+      [extended]="isAccountFocussed || isMenuOpen"
+    >
+      <mat-icon>account_box</mat-icon>
+      {{ isAccountFocussed || isMenuOpen ? "Account" : "" }}
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>settings</mat-icon>
+        <span>Impostazioni account</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon color="warn">exit_to_app</mat-icon>
+        <span class="exit">Esci</span>
+      </button>
+    </mat-menu>
+  </ng-template>
+</div>
