@@ -86,7 +86,7 @@ app.post("/api/login", async (req, res) => {
     await mongoose.connect(url);
 
     key = "";
-    sessionID = sessionIDGenerator();
+    const sessionID = sessionIDGenerator();
 
     const username = await User.findOne({
       username: req.body.user,
@@ -106,7 +106,7 @@ app.post("/api/login", async (req, res) => {
       key = "phoneNumber";
     }
 
-    user = await User.findOneAndUpdate(
+    const user = await User.findOneAndUpdate(
       { [key]: req.body.user },
       { sessionID: sessionID }
     );
@@ -137,7 +137,7 @@ app.post("/api/logout", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    user = await sessionCheck(req.headers.authorization);
+    const user = await sessionCheck(req.headers.authorization);
 
     if (!user) {
       throw new Error("Not Found");
@@ -162,11 +162,13 @@ app.get("/api/contacts", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    if (!(await sessionCheck(req.headers.authorization))) {
+    const user = await sessionCheck(req.headers.authorization);
+
+    if (!user) {
       throw new Error("Unauthorized");
     }
 
-    const contacts = await Contact.find({});
+    const contacts = user.contacts;
 
     return res.status(200).json({
       status: "success",
@@ -184,11 +186,15 @@ app.get("/api/details/:id", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    if (!(await sessionCheck(req.headers.authorization))) {
+    const user = await sessionCheck(req.headers.authorization);
+
+    if (!user) {
       throw new Error("Unauthorized");
     }
 
-    const contact = await Contact.findById(req.params.id);
+    const contact = user.contacts.find(
+      (contact) => contact._id == req.params.id // contact._id = object; req.params.id = string
+    );
 
     if (!contact) {
       throw new Error("Not Found");
@@ -210,16 +216,18 @@ app.post("/api/add", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    if (!(await sessionCheck(req.headers.authorization))) {
+    const user = await sessionCheck(req.headers.authorization);
+
+    if (!user) {
       throw new Error("Unauthorized");
     }
 
-    existingPhoneNumber = await Contact.findOne({
-      phoneNumber: req.body.phoneNumber,
-    });
-    existingEmail = await Contact.findOne({
-      email: req.body.email,
-    });
+    existingPhoneNumber = user.contacts.find(
+      (contact) => contact.phoneNumber === req.body.phoneNumber
+    );
+    existingEmail = user.contacts.find(
+      (contact) => contact.email === req.body.email
+    );
 
     if (existingPhoneNumber) {
       throw new Error("Phone number Conflict");
@@ -228,7 +236,7 @@ app.post("/api/add", async (req, res) => {
       throw new Error("Email Conflict");
     }
 
-    const newContact = new Contact({
+    const newContact = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       phoneNumber: req.body.phoneNumber,
@@ -236,9 +244,11 @@ app.post("/api/add", async (req, res) => {
       addressCity: req.body.addressCity,
       addressStreet: req.body.addressStreet,
       isFavorite: req.body.isFavorite,
-    });
+    };
 
-    newContact.save();
+    user.contacts.push(newContact);
+    user.save();
+
     return res.status(200).json({
       status: "success",
       data: newContact,
@@ -255,32 +265,30 @@ app.post("/api/edit/:id", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    if (!(await sessionCheck(req.headers.authorization))) {
+    const user = await sessionCheck(req.headers.authorization);
+
+    if (!user) {
       throw new Error("Unauthorized");
     }
 
-    const filter = { _id: req.params.id };
-    const update = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      phoneNumber: req.body.phoneNumber,
-      email: req.body.email,
-      addressCity: req.body.addressCity,
-      addressStreet: req.body.addressStreet,
-      isFavorite: req.body.isFavorite,
-    };
+    user.contacts.find((contact) => contact._id == req.params.id).firstName =
+      req.body.firstName;
+    user.contacts.find((contact) => contact._id == req.params.id).lastName =
+      req.body.lastName;
+    user.contacts.find((contact) => contact._id == req.params.id).email =
+      req.body.email;
+    user.contacts.find((contact) => contact._id == req.params.id).phoneNumber =
+      req.body.phoneNumber;
+    user.contacts.find(
+      (contact) => contact._id == req.params.id
+    ).addressStreet = req.body.addressStreet;
+    user.contacts.find((contact) => contact._id == req.params.id).addressCity =
+      req.body.addressCity;
 
-    const updatedContact = await Contact.findOneAndUpdate(filter, update, {
-      new: true,
-    });
-
-    if (!updatedContact) {
-      throw new Error("Not Found");
-    }
-
+    user.save();
     return res.status(200).json({
       status: "success",
-      data: updatedContact,
+      data: user.contacts.find((contact) => contact._id == req.params.id),
     });
   } catch (err) {
     return res.status(statusCode[err.message] ?? 400).json({
@@ -294,26 +302,19 @@ app.post("/api/favorite/:id", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    if (!(await sessionCheck(req.headers.authorization))) {
+    const user = await sessionCheck(req.headers.authorization);
+
+    if (!user) {
       throw new Error("Unauthorized");
     }
 
-    const filter = { _id: req.params.id };
-    const update = { isFavorite: req.body.isFavorite };
+    user.contacts.find((contact) => contact._id == req.params.id).isFavorite =
+      req.body.isFavorite;
 
-    const updatedFavoriteContact = await Contact.findOneAndUpdate(
-      filter,
-      update,
-      { upsert: true }
-    );
-
-    if (!updatedFavoriteContact) {
-      throw new Error("Not Found");
-    }
-
+    user.save();
     return res.status(200).json({
       status: "success",
-      data: updatedFavoriteContact,
+      data: user.contacts.find((contact) => contact._id == req.params.id),
     });
   } catch (err) {
     return res.status(statusCode[err.message] ?? 400).json({
@@ -327,19 +328,19 @@ app.delete("/api/delete/:id", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    if (!(await sessionCheck(req.headers.authorization))) {
+    const user = await sessionCheck(req.headers.authorization);
+
+    if (!user) {
       throw new Error("Unauthorized");
     }
 
-    const deleted = await Contact.findByIdAndDelete(req.params.id);
+    index = user.contacts.findIndex((contact) => contact._id == req.params.id);
+    user.contacts.splice(index, 1);
 
-    if (!deleted) {
-      throw new Error("Not Found");
-    }
-
+    user.save();
     return res.status(200).json({
       status: "success",
-      data: deleted,
+      data: "Successful",
     });
   } catch (err) {
     return res.status(statusCode[err.message] ?? 400).json({
