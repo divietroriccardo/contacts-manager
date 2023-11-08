@@ -37,7 +37,6 @@
     mat-fab
     color="basic"
     aria-label="Registrati"
-    (click)="(true)"
     [routerLink]="['/signup']"
     extended
   >
@@ -51,11 +50,39 @@
     mat-fab
     color="basic"
     aria-label="Login"
-    (click)="(true)"
     [routerLink]="['/login']"
     extended
   >
     <mat-icon>person</mat-icon>
     Accedi
   </button>
+</ng-template>
+
+<ng-template
+  [ngIf]="pageService.pageIsOn != 'login' && pageService.pageIsOn != 'signup'"
+  class="accountButton"
+>
+  <button
+    mat-fab
+    color="basic"
+    [matMenuTriggerFor]="menu"
+    (menuOpened)="isMenuOpen = true"
+    (menuClosed)="isMenuOpen = false"
+    (mouseenter)="isAccountFocussed = true"
+    (mouseleave)="isAccountFocussed = false"
+    [extended]="isAccountFocussed || isMenuOpen"
+  >
+    <mat-icon>account_box</mat-icon>
+    {{ isAccountFocussed || isMenuOpen ? "Account" : "" }}
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>settings</mat-icon>
+      <span>Impostazioni account</span>
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon color="warn">exit_to_app</mat-icon>
+      <span class="exit">Esci</span>
+    </button>
+  </mat-menu>
 </ng-template>

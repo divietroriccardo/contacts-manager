@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Contacts } from './contacts';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { filter, tap, map, delay } from 'rxjs';
+import { Contacts } from './contacts';
+
+import { SessionService } from './session.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,36 +24,43 @@ export class ContactService {
 
   baseURL: string = '/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService
+  ) {}
 
   getData() {
     this.status = 'loading';
 
-    return this.http.get<any>(`${this.baseURL}/contacts`).pipe(
-      tap((resp) => {
-        if (resp.status === 'fail') {
-          this.status = 'error';
-          throw new TypeError(`Error`);
-        }
-      }),
-      filter((resp) => resp.status === 'success'),
-      map((resp) => resp.data)
-    );
+    return this.http
+      .get<any>(`${this.baseURL}/contacts`, this.getHeaders())
+      .pipe(
+        tap((resp) => {
+          if (resp.status === 'fail') {
+            this.status = 'error';
+            throw new TypeError(`Error`);
+          }
+        }),
+        filter((resp) => resp.status === 'success'),
+        map((resp) => resp.data)
+      );
   }
 
   getContact(idContact: string) {
     this.status = 'loading';
 
-    return this.http.get<any>(`${this.baseURL}/details/${idContact}`).pipe(
-      delay(100),
-      tap((resp) => {
-        if (resp.status === 'fail') {
-          throw new TypeError(`Error`);
-        }
-      }),
-      filter((resp) => resp.status === 'success'),
-      map((resp) => resp.data)
-    );
+    return this.http
+      .get<any>(`${this.baseURL}/details/${idContact}`, this.getHeaders())
+      .pipe(
+        delay(100),
+        tap((resp) => {
+          if (resp.status === 'fail') {
+            throw new TypeError(`Error`);
+          }
+        }),
+        filter((resp) => resp.status === 'success'),
+        map((resp) => resp.data)
+      );
   }
 
   addNewContact(
@@ -74,31 +83,34 @@ export class ContactService {
       isFavorite: false,
     };
 
-    return this.http.post<any>(`${this.baseURL}/add`, newContact).pipe(
-      tap((resp) => {
-        if (resp.status === 'fail') {
-          this.status = 'error';
-          throw new TypeError(`Error`);
-        }
-      }),
-      filter((resp) => resp.status === 'success'),
-      map((resp) => resp.data)
-    );
+    return this.http
+      .post<any>(`${this.baseURL}/add`, newContact, this.getHeaders())
+      .pipe(
+        tap((resp) => {
+          if (resp.status === 'fail') {
+            this.status = 'error';
+            throw new TypeError(`Error`);
+          }
+        }),
+        map((resp) => resp.data)
+      );
   }
 
   deleteContact(idToDelete: string) {
     this.status = 'loading';
 
-    return this.http.delete<any>(`${this.baseURL}/delete/${idToDelete}`).pipe(
-      tap((resp) => {
-        if (resp.status === 'fail') {
-          this.status = 'error';
-          throw new TypeError(`Error`);
-        }
-      }),
-      filter((resp) => resp.status === 'success'),
-      map((resp) => resp.data)
-    );
+    return this.http
+      .delete<any>(`${this.baseURL}/delete/${idToDelete}`, this.getHeaders())
+      .pipe(
+        tap((resp) => {
+          if (resp.status === 'fail') {
+            this.status = 'error';
+            throw new TypeError(`Error`);
+          }
+        }),
+        filter((resp) => resp.status === 'success'),
+        map((resp) => resp.data)
+      );
   }
 
   editContact(
@@ -120,23 +132,8 @@ export class ContactService {
       addressStreet: addressStreetToEdit,
       isFavorite: isFavoriteToEdit,
     };
-    return this.http.post<any>(`${this.baseURL}/edit/${idToEdit}`, update).pipe(
-      tap((resp) => {
-        if (resp.status === 'fail') {
-          this.status = 'error';
-          throw new TypeError(`Error`);
-        }
-      }),
-      filter((resp) => resp.status === 'success'),
-      map((resp) => resp.data)
-    );
-  }
-
-  editFavorite(idToUpdate: string, isFavoriteToUpdate: boolean) {
-    const update = { isFavorite: isFavoriteToUpdate };
-
     return this.http
-      .post<any>(`${this.baseURL}/favorite/${idToUpdate}`, update)
+      .post<any>(`${this.baseURL}/edit/${idToEdit}`, update, this.getHeaders())
       .pipe(
         tap((resp) => {
           if (resp.status === 'fail') {
@@ -147,5 +144,34 @@ export class ContactService {
         filter((resp) => resp.status === 'success'),
         map((resp) => resp.data)
       );
+  }
+
+  editFavorite(idToUpdate: string, isFavoriteToUpdate: boolean) {
+    const update = { isFavorite: isFavoriteToUpdate };
+
+    return this.http
+      .post<any>(
+        `${this.baseURL}/favorite/${idToUpdate}`,
+        update,
+        this.getHeaders()
+      )
+      .pipe(
+        tap((resp) => {
+          if (resp.status === 'fail') {
+            this.status = 'error';
+            throw new TypeError(`Error`);
+          }
+        }),
+        filter((resp) => resp.status === 'success'),
+        map((resp) => resp.data)
+      );
+  }
+
+  getHeaders() {
+    const headerDict = {
+      authorization: this.sessionService.get(),
+    };
+
+    return { headers: new HttpHeaders(headerDict) };
   }
 }

@@ -29,7 +29,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatPasswordStrengthModule } from "@angular-material-extensions/password-strength";
+import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
+import { MatMenuModule } from '@angular/material/menu';
 import { NgIf } from '@angular/common';
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { NgIf } from '@angular/common';
     MatSlideToggleModule,
     MatProgressSpinnerModule,
     MatPasswordStrengthModule,
+    MatMenuModule,
     NgIf,
   ],
   providers: [],

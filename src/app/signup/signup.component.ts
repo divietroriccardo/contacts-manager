@@ -52,7 +52,11 @@ export class SignupComponent {
   }
 
   signup() {
-    if (!this.signupFields.invalid) {
+    if (
+      !this.signupFields.invalid &&
+      this.signupFields.value.password ===
+        this.signupFields.value.repeatedPassword
+    ) {
       this.userService
         .signup(
           this.signupFields.value.username || '',
@@ -62,27 +66,34 @@ export class SignupComponent {
         )
         .subscribe({
           next: (resp) => {
-            if (resp === 'Username already exist') {
+            this.snackBar.open('Registrazione effettuata');
+
+            this.router.navigate(['/login']);
+          },
+          error: (resp) => {
+            if (resp.error.message === 'Username Conflict') {
               this.snackBar.open(
                 'Questo nome utente non è disponibile. Prova con un altro'
               );
-            } else if (resp === 'Email already exist') {
+            }
+
+            if (resp.error.message === 'Email Conflict') {
               this.snackBar.open(
                 'Un altro account usa lo stesso indirizzo email'
               );
-            } else if (resp === 'Phone number already exist') {
+            }
+
+            if (resp.error.message === 'Phone number Conflict') {
               this.snackBar.open(
                 'Un altro account usa lo stesso numero di telefono'
               );
-            } else {
-              this.snackBar.open('Registrazione effettuata');
-
-              this.router.navigate(['/login']);
             }
-          },
-          error: (err) => {
-            this.snackBar.open('Errore. Prova di nuovo');
-            console.log(err);
+
+            if (resp.error.message === 'Error') {
+              this.snackBar.open('Errore. Prova di nuovo');
+            }
+
+            console.log(resp.error);
           },
         });
     } else {

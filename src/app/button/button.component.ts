@@ -4,6 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { PageService } from '../page.service';
 import { DialogService } from '../dialog.service';
+import { SessionService } from '../session.service';
+import { UserService } from '../user.service';
 
 import { DialogComponent } from '../dialog/dialog.component';
 
@@ -13,12 +15,29 @@ import { DialogComponent } from '../dialog/dialog.component';
   styleUrls: ['./button.component.scss'],
 })
 export class ButtonComponent {
+  isAccountFocussed: boolean = false;
+  isMenuOpen: boolean = false;
+
   constructor(
     public pageService: PageService,
     private dialog: MatDialog,
     private router: Router,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private sessionService: SessionService,
+    private userService: UserService
   ) {}
+
+  logout() {
+    this.userService.logout().subscribe({
+      next: (resp) => {
+        this.sessionService.set("");
+      },
+      error: (resp) => {
+        console.log(resp.error);
+      },
+    });
+    this.router.navigate(['/login']);
+  }
 
   openDialog() {
     if (

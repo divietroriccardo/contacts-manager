@@ -6,6 +6,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PageService } from './../page.service';
 import { UserService } from '../user.service';
 import { SnackbarService } from '../snackbar.service';
+import { SessionService } from '../session.service';
 
 @Component({
   selector: 'app-login',
@@ -17,14 +18,15 @@ export class LoginComponent implements OnInit {
 
   loginFields = new FormGroup({
     user: new FormControl('rickrick', [Validators.required]),
-    password: new FormControl('Rick123$', [Validators.required])
-  })
+    password: new FormControl('Rick123$', [Validators.required]),
+  });
 
   constructor(
     private router: Router,
     private pageService: PageService,
     private userService: UserService,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    private sessionService: SessionService
   ) {}
 
   ngOnInit() {
@@ -36,11 +38,15 @@ export class LoginComponent implements OnInit {
   login() {
     if (!this.loginFields.invalid) {
       this.userService
-        .login(this.loginFields.value.user || '', this.loginFields.value.password || '')
+        .login(
+          this.loginFields.value.user || '',
+          this.loginFields.value.password || ''
+        )
         .subscribe({
           next: (resp) => {
-            this.snackBar.open('Accesso effettuato');
+            this.sessionService.set(resp);
 
+            this.snackBar.open('Accesso effettuato');
             this.router.navigate(['/contacts']);
           },
           error: (err) => {
@@ -52,9 +58,7 @@ export class LoginComponent implements OnInit {
             }
           },
         });
-    }
-    else
-    {
+    } else {
       this.snackBar.open('Inserire tutti i campi correttamente');
     }
   }

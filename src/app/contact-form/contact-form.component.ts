@@ -125,23 +125,30 @@ export class ContactFormComponent implements OnInit {
         )
         .subscribe({
           next: (resp) => {
-            if (resp != 'Phone number already exist') {
-              this.snackBar.open(
-                `Il contatto ${resp.firstName} ${resp.lastName} 
+            this.snackBar.open(
+              `Il contatto ${resp.firstName} ${resp.lastName} 
                 è stato aggiunto`
-              );
+            );
 
-              this.router.navigate(['/contacts']);
-            } else {
+            this.router.navigate(['/contacts']);
+          },
+          error: (resp) => {
+            this.contactService.status = 'success';
+            if (resp.error.message === 'Phone number Conflict') {
               this.snackBar.open(
                 `Il numero ${
                   this.formFields.get('phoneNumber')?.value
                 } è stato già inserito`
               );
             }
-          },
-          error: (err) => {
-            console.log(err);
+            if (resp.error.message === 'Email Conflict') {
+              this.snackBar.open(
+                `L'email ${
+                  this.formFields.get('email')?.value
+                } è stata già inserita`
+              );
+            }
+            console.log(resp.error);
           },
         });
     } else {
@@ -233,7 +240,7 @@ export class ContactFormComponent implements OnInit {
     this.formElements.map((el: any) =>
       this.formFields.addControl(
         el.type,
-        new FormControl(el.value, !!el.validators ? el.validators : [])
+        new FormControl(el.value, el.validators ?? [])
       )
     );
   }
