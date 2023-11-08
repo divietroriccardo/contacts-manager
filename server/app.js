@@ -8,7 +8,6 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 const User = require("./model/user");
-const Contact = require("./model/contact");
 
 const url = "mongodb://0.0.0.0:27017/ContactsDB";
 const statusCode = {
@@ -186,15 +185,16 @@ app.get("/api/details/:id", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    const user = await sessionCheck(req.headers.authorization);
-
-    if (!user) {
+    if (!(await sessionCheck(req.headers.authorization))) {
       throw new Error("Unauthorized");
     }
+    const user = await User.findOne({ sessionID: req.headers.authorization });
 
-    const contact = user.contacts.find(
-      (contact) => contact._id == req.params.id // contact._id = object; req.params.id = string
-    );
+    if (!user) {
+      throw new Error("Not Found");
+    }
+
+    const contact = user.contacts.id(req.params.id);
 
     if (!contact) {
       throw new Error("Not Found");
@@ -216,10 +216,14 @@ app.post("/api/add", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    const user = await sessionCheck(req.headers.authorization);
+    if (!(await sessionCheck(req.headers.authorization))) {
+      throw new Error("Unauthorized");
+    }
+
+    const user = await User.findOne({ sessionID: req.headers.authorization });
 
     if (!user) {
-      throw new Error("Unauthorized");
+      throw new Error("Not Found");
     }
 
     existingPhoneNumber = user.contacts.find(
@@ -247,7 +251,7 @@ app.post("/api/add", async (req, res) => {
     };
 
     user.contacts.push(newContact);
-    user.save();
+    await user.save();
 
     return res.status(200).json({
       status: "success",
@@ -265,30 +269,33 @@ app.post("/api/edit/:id", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    const user = await sessionCheck(req.headers.authorization);
-
-    if (!user) {
+    if (!(await sessionCheck(req.headers.authorization))) {
       throw new Error("Unauthorized");
     }
 
-    user.contacts.find((contact) => contact._id == req.params.id).firstName =
-      req.body.firstName;
-    user.contacts.find((contact) => contact._id == req.params.id).lastName =
-      req.body.lastName;
-    user.contacts.find((contact) => contact._id == req.params.id).email =
-      req.body.email;
-    user.contacts.find((contact) => contact._id == req.params.id).phoneNumber =
-      req.body.phoneNumber;
-    user.contacts.find(
-      (contact) => contact._id == req.params.id
-    ).addressStreet = req.body.addressStreet;
-    user.contacts.find((contact) => contact._id == req.params.id).addressCity =
-      req.body.addressCity;
+    const user = await User.findOne({ sessionID: req.headers.authorization });
 
-    user.save();
+    if (!user) {
+      throw new Error("Not Found");
+    }
+
+    const contact = user.contacts.id(req.params.id);
+
+    if (!contact) {
+      throw new Error("Not Found");
+    }
+
+    contact.firstName = req.body.firstName;
+    contact.lastName = req.body.lastName;
+    contact.phoneNumber = req.body.phoneNumber;
+    contact.email = req.body.email;
+    contact.addressCity = req.body.addressCity;
+    contact.addressStreet = req.body.addressStreet;
+
+    const save = await user.save();
     return res.status(200).json({
       status: "success",
-      data: user.contacts.find((contact) => contact._id == req.params.id),
+      data: save,
     });
   } catch (err) {
     return res.status(statusCode[err.message] ?? 400).json({
@@ -302,19 +309,22 @@ app.post("/api/favorite/:id", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    const user = await sessionCheck(req.headers.authorization);
-
-    if (!user) {
+    if (!(await sessionCheck(req.headers.authorization))) {
       throw new Error("Unauthorized");
     }
 
-    user.contacts.find((contact) => contact._id == req.params.id).isFavorite =
-      req.body.isFavorite;
+    const user = await User.findOne({ sessionID: req.headers.authorization });
 
-    user.save();
+    if (!user) {
+      throw new Error("Not Found");
+    }
+
+    user.contacts.id(req.params.id).isFavorite = req.body.isFavorite;
+
+    const save = await user.save();
     return res.status(200).json({
       status: "success",
-      data: user.contacts.find((contact) => contact._id == req.params.id),
+      data: save,
     });
   } catch (err) {
     return res.status(statusCode[err.message] ?? 400).json({
@@ -328,19 +338,22 @@ app.delete("/api/delete/:id", async (req, res) => {
   try {
     await mongoose.connect(url);
 
-    const user = await sessionCheck(req.headers.authorization);
-
-    if (!user) {
+    if (!(await sessionCheck(req.headers.authorization))) {
       throw new Error("Unauthorized");
     }
 
-    index = user.contacts.findIndex((contact) => contact._id == req.params.id);
-    user.contacts.splice(index, 1);
+    const user = await User.findOne({ sessionID: req.headers.authorization });
 
-    user.save();
+    if (!user) {
+      throw new Error("Not Found");
+    }
+
+    user.contacts.id(req.params.id).deleteOne();
+
+    const save = await user.save();
     return res.status(200).json({
       status: "success",
-      data: "Successful",
+      data: save,
     });
   } catch (err) {
     return res.status(statusCode[err.message] ?? 400).json({
