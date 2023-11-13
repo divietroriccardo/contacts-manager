@@ -1,9 +1,12 @@
 <div class="container" [ngSwitch]="contactService.status">
   <div class="result" *ngSwitchCase="'success'">
-    <mat-list *ngIf="!(contactList.length === 0); else noData">
+    <div class="sortButton">
       <button mat-mini-fab color="basic" (click)="getSort()">
         <mat-icon>swap_horiz</mat-icon>
       </button>
+    </div>
+    
+    <mat-list *ngIf="!(contactList.length === 0); else noData">
       <mat-list-item *ngFor="let contact of contactList">
         <button
           class="contact"
