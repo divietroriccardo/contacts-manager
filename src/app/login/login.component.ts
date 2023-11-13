@@ -17,8 +17,8 @@ export class LoginComponent implements OnInit {
   isHidden: boolean = true;
 
   loginFields = new FormGroup({
-    user: new FormControl('rickrick', [Validators.required]),
-    password: new FormControl('Rick123$', [Validators.required]),
+    user: new FormControl('divietroriccardo', [Validators.required]),
+    password: new FormControl('Rick1234', [Validators.required]),
   });
 
   constructor(

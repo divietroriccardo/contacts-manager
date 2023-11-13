@@ -98,8 +98,7 @@ export class SignupComponent {
         });
     } else {
       this.signupFields.value.password ===
-        this.signupFields.value.repeatedPassword ||
-      this.signupFields.get('repeatedPassword')?.invalid
+        this.signupFields.value.repeatedPassword
         ? this.snackBar.open('Inserire tutti i campi correttamente')
         : this.snackBar.open('Le password non corrispondono');
     }

@@ -11,7 +11,10 @@ export class UserService {
   status: string = '';
   baseURL: string = '/api';
 
-  constructor(private http: HttpClient, private sessionService : SessionService) {}
+  constructor(
+    private http: HttpClient,
+    private sessionService: SessionService
+  ) {}
 
   login(loginUser: string, loginPassword: string) {
     this.status = 'loading';
@@ -59,22 +62,93 @@ export class UserService {
     );
   }
 
-  logout()
-  {
+  logout() {
+    return this.http
+      .post<any>(`${this.baseURL}/logout`, null, this.getHeaders())
+      .pipe(
+        tap((resp) => {
+          if (resp.status === 'fail') {
+            this.status = 'error';
+            throw new TypeError(`Error`);
+          }
+        })
+      );
+  }
+
+  usernameChange(newUsername: string) {
+    return this.http
+      .post<any>(
+        `${this.baseURL}/usernameChange`,
+        { newUsername: newUsername },
+        this.getHeaders()
+      )
+      .pipe(
+        tap((resp) => {
+          if (resp.status === 'fail') {
+            this.status = 'error';
+            throw new TypeError(`Error`);
+          }
+        })
+      );
+  }
+
+  emailChange(newEmail: string, password: string) {
+    return this.http
+      .post<any>(
+        `${this.baseURL}/emailChange`,
+        { newEmail: newEmail, password: password },
+        this.getHeaders()
+      )
+      .pipe(
+        tap((resp) => {
+          if (resp.status === 'fail') {
+            this.status = 'error';
+            throw new TypeError(`Error`);
+          }
+        })
+      );
+  }
+
+  phoneNumberChange(newPhoneNumber: string) {
+    return this.http
+      .post<any>(
+        `${this.baseURL}/phoneNumberChange`,
+        { newPhoneNumber: newPhoneNumber },
+        this.getHeaders()
+      )
+      .pipe(
+        tap((resp) => {
+          if (resp.status === 'fail') {
+            this.status = 'error';
+            throw new TypeError(`Error`);
+          }
+        })
+      );
+  }
+
+  passwordChange(oldPassword: string, newPassword: string) {
+    const passwords = {
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+    };
+
+    return this.http
+      .post<any>(`${this.baseURL}/passwordChange`, passwords, this.getHeaders())
+      .pipe(
+        tap((resp) => {
+          if (resp.status === 'fail') {
+            this.status = 'error';
+            throw new TypeError(`Error`);
+          }
+        })
+      );
+  }
+
+  getHeaders() {
     const headerDict = {
       authorization: this.sessionService.get(),
     };
 
-    const options = { headers: new HttpHeaders(headerDict) };
-
-    return this.http.post<any>(`${this.baseURL}/logout`, null, options).pipe(
-      tap((resp) => 
-      {
-        if (resp.status === 'fail') {
-          this.status = 'error';
-          throw new TypeError(`Error`);
-        }
-      })
-    )
+    return { headers: new HttpHeaders(headerDict) };
   }
 }

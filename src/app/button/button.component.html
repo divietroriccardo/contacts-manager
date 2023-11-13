@@ -1,6 +1,8 @@
 <div class="buttons">
   <ng-template
-    [ngIf]="pageService.pageIsOn === 'list' || pageService.pageIsOn === 'search'"
+    [ngIf]="
+      pageService.pageIsOn === 'list' || pageService.pageIsOn === 'search'
+    "
   >
     <button
       mat-fab
@@ -15,12 +17,13 @@
       {{ isButtonFocussed ? "Aggiungi" : "" }}
     </button>
   </ng-template>
-  
+
   <ng-template
     [ngIf]="
       pageService.pageIsOn === 'edit' ||
       pageService.pageIsOn === 'add' ||
-      pageService.pageIsOn === 'details'
+      pageService.pageIsOn === 'details' ||
+      pageService.pageIsOn === 'settings'
     "
   >
     <button
@@ -36,7 +39,7 @@
       {{ isButtonFocussed ? "Lista" : "" }}
     </button>
   </ng-template>
-  
+
   <ng-template [ngIf]="pageService.pageIsOn === 'login'">
     <button
       mat-fab
@@ -51,7 +54,7 @@
       {{ isButtonFocussed ? "Crea account" : "" }}
     </button>
   </ng-template>
-  
+
   <ng-template [ngIf]="pageService.pageIsOn === 'signup'">
     <button
       mat-fab
@@ -66,9 +69,15 @@
       {{ isButtonFocussed ? "Accedi" : "" }}
     </button>
   </ng-template>
-  
+
   <ng-template
-    [ngIf]="pageService.pageIsOn != 'login' && pageService.pageIsOn != 'signup'"
+    [ngIf]="
+      pageService.pageIsOn != 'login' &&
+      pageService.pageIsOn != 'signup' &&
+      pageService.pageIsOn != 'settings' &&
+      pageService.pageIsOn != 'edit' &&
+      pageService.pageIsOn != 'add'
+    "
     class="accountButton"
   >
     <button
@@ -84,14 +93,36 @@
       <mat-icon>account_box</mat-icon>
       {{ isAccountFocussed || isMenuOpen ? "Account" : "" }}
     </button>
+
     <mat-menu #menu="matMenu">
-      <button mat-menu-item>
+      <button mat-menu-item [matMenuTriggerFor]="accountSettings">
+        <!-- [routerLink]="['/account/settings']" -->
         <mat-icon>settings</mat-icon>
-        <span>Impostazioni account</span>
+        Impostazioni account
       </button>
+
       <button mat-menu-item (click)="logout()">
         <mat-icon color="warn">exit_to_app</mat-icon>
         <span class="exit">Esci</span>
+      </button>
+    </mat-menu>
+
+    <mat-menu #accountSettings="matMenu">
+      <button mat-menu-item [routerLink]="['/account/settings/username']">
+        <mat-icon>person</mat-icon>
+        Cambia nome utente
+      </button>
+      <button mat-menu-item [routerLink]="['/account/settings/email']">
+        <mat-icon>alternate_email</mat-icon>
+        Cambia email
+      </button>
+      <button mat-menu-item [routerLink]="['/account/settings/phoneNumber']">
+        <mat-icon>phone</mat-icon>
+        Cambia numero di telefono
+      </button>
+      <button mat-menu-item [routerLink]="['/account/settings/password']">
+        <mat-icon>password</mat-icon>
+        Cambia password
       </button>
     </mat-menu>
   </ng-template>

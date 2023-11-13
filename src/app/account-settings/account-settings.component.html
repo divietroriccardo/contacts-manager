@@ -1,0 +1,186 @@
+<div class="settings">
+  <ng-template [ngIf]="settingsType === 'username'">
+    <mat-form-field appearance="outline" hideRequiredMarker="true">
+      <mat-label>Nuovo nome utente</mat-label>
+      <mat-icon matPrefix>person</mat-icon>
+      <input
+        matInput
+        title="new username"
+        [formControl]="newUsername"
+        required
+      />
+      <mat-error *ngIf="newUsername.invalid">{{
+        getErrorMessage("username")
+      }}</mat-error>
+    </mat-form-field>
+
+    <button
+      mat-fab
+      class="saveButton"
+      color="primary"
+      aria-label="Accedi"
+      (click)="saveNewUsername()"
+      extended
+    >
+      <mat-icon>save_alt</mat-icon>
+      Salva
+    </button>
+  </ng-template>
+
+  <ng-template [ngIf]="settingsType === 'email'" [formGroup]="emailFields">
+    <mat-form-field appearance="outline" hideRequiredMarker="true">
+      <mat-label>Nuova email</mat-label>
+      <mat-icon matPrefix>email</mat-icon>
+      <input matInput title="new email" formControlName="newEmail" required />
+      <mat-error *ngIf="emailFields.get('newEmail')?.invalid">{{
+        getErrorMessage("email")
+      }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" hideRequiredMarker="true">
+      <mat-label>Password</mat-label>
+      <mat-icon matPrefix>password</mat-icon>
+      <input
+        matInput
+        title="password"
+        [type]="isOldPasswordHidden ? 'password' : 'text'"
+        formControlName="password"
+        required
+      />
+      <mat-error *ngIf="emailFields.get('password')?.invalid">{{
+        getErrorMessage("password")
+      }}</mat-error>
+      
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="isOldPasswordHidden = !isOldPasswordHidden"
+      >
+        <mat-icon>{{
+          isOldPasswordHidden ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <button
+      mat-fab
+      class="saveButton"
+      color="primary"
+      aria-label="Accedi"
+      (click)="saveNewEmail()"
+      extended
+    >
+      <mat-icon>save_alt</mat-icon>
+      Salva
+    </button>
+  </ng-template>
+
+  <ng-template [ngIf]="settingsType === 'phoneNumber'">
+    <mat-form-field appearance="outline" hideRequiredMarker="true">
+      <mat-label>Nuovo numero di telefono</mat-label>
+      <mat-icon matPrefix>phone</mat-icon>
+      <input
+        matInput
+        title="new phone number"
+        [formControl]="newPhoneNumber"
+        required
+      />
+      <mat-error *ngIf="newPhoneNumber.invalid">{{
+        getErrorMessage("phoneNumber")
+      }}</mat-error>
+    </mat-form-field>
+
+    <button
+      mat-fab
+      class="saveButton"
+      color="primary"
+      aria-label="Accedi"
+      (click)="saveNewPhoneNumber()"
+      extended
+    >
+      <mat-icon>save_alt</mat-icon>
+      Salva
+    </button>
+  </ng-template>
+
+  <ng-template
+    [ngIf]="settingsType === 'password'"
+    [formGroup]="passwordFields"
+  >
+    <mat-form-field appearance="outline" hideRequiredMarker="true">
+      <mat-label>Password attuale</mat-label>
+      <mat-icon matPrefix>password</mat-icon>
+      <input
+        matInput
+        title="old password"
+        [type]="isOldPasswordHidden ? 'password' : 'text'"
+        formControlName="oldPassword"
+        required
+      />
+      <mat-error *ngIf="passwordFields.get('oldPassword')?.invalid">{{
+        getErrorMessage("oldPassword")
+      }}</mat-error>
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="isOldPasswordHidden = !isOldPasswordHidden"
+      >
+        <mat-icon>{{
+          isOldPasswordHidden ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" hideRequiredMarker="true">
+      <mat-label>Nuova password</mat-label>
+      <mat-icon matPrefix>password</mat-icon>
+      <mat-pass-toggle-visibility
+        #toggle
+        matSuffix
+      ></mat-pass-toggle-visibility>
+      <input
+        matInput
+        title="password"
+        [type]="toggle.type"
+        formControlName="newPassword"
+        (focus)="showDetails = !showDetails"
+        (blur)="showDetails = !showDetails"
+        required
+      />
+      <mat-password-strength
+        #passwordComponent
+        [password]="passwordFields.value.newPassword || ''"
+      >
+      </mat-password-strength>
+
+      <mat-error *ngIf="passwordFields.get('newPassword')?.invalid">{{
+        getErrorMessage("newPassword")
+      }}</mat-error>
+    </mat-form-field>
+
+    <mat-password-strength-info
+      *ngIf="showDetails"
+      [minCharsCriteriaMsg]="
+        'Contiene almeno ' + passwordComponent.min + ' caratteri'
+      "
+      [passwordComponent]="passwordComponent"
+      lowerCaseCriteriaMsg="Contiene almeno un carattere minuscolo"
+      upperCaseCriteriaMsg="Contiene almeno un carattere maiuscolo"
+      digitsCriteriaMsg="Contiene almeno un numero"
+      specialCharsCriteriaMsg="Contiene almeno un carattere speciale"
+    >
+    </mat-password-strength-info>
+
+    <button
+      mat-fab
+      class="saveButton"
+      color="primary"
+      aria-label="Accedi"
+      (click)="saveNewPassword()"
+      extended
+    >
+      <mat-icon>save_alt</mat-icon>
+      Salva
+    </button>
+  </ng-template>
+</div>

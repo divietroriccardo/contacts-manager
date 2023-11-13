@@ -15,7 +15,7 @@ import { DialogComponent } from '../dialog/dialog.component';
   styleUrls: ['./button.component.scss'],
 })
 export class ButtonComponent {
-  isButtonFocussed: boolean = false
+  isButtonFocussed: boolean = false;
   isAccountFocussed: boolean = false;
   isMenuOpen: boolean = false;
 
@@ -31,7 +31,7 @@ export class ButtonComponent {
   logout() {
     this.userService.logout().subscribe({
       next: (resp) => {
-        this.sessionService.set("");
+        this.sessionService.set('');
       },
       error: (resp) => {
         console.log(resp.error);
@@ -46,9 +46,9 @@ export class ButtonComponent {
       !(this.pageService.pageIsOn === 'search')
     ) {
       this.dialogService.setMessage(
-        'Confermi di voler annullare le modifiche?',
-        'Elimina modifiche',
-        'Continua a modificare'
+        "Confermi di voler annullare l'operazione?",
+        'Annulla',
+        'Continua'
       );
 
       let dialogRef = this.dialog.open(DialogComponent);

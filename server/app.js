@@ -157,6 +157,162 @@ app.post("/api/logout", async (req, res) => {
   }
 });
 
+app.post("/api/usernameChange", async (req, res) => {
+  try {
+    await mongoose.connect(url);
+
+    if (!(await sessionCheck(req.headers.authorization))) {
+      throw new Error("Unauthorized");
+    }
+
+    existingUsername = await User.findOne({ username: req.body.newUsername });
+
+    if (existingUsername) {
+      throw new Error("Username Conflict");
+    }
+
+    const user = await User.findOne({ sessionID: req.headers.authorization });
+
+    if (!user) {
+      throw new Error("Not Found");
+    }
+
+    user.username = req.body.newUsername;
+
+    const save = await user.save();
+    return res.status(200).json({
+      status: "success",
+      data: save,
+    });
+  } catch (err) {
+    return res.status(statusCode[err.message] ?? 400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+});
+
+app.post("/api/emailChange", async (req, res) => {
+  try {
+    await mongoose.connect(url);
+
+    if (!(await sessionCheck(req.headers.authorization))) {
+      throw new Error("Unauthorized");
+    }
+
+    existingEmail = await User.findOne({ email: req.body.newEmail });
+
+    if (existingEmail) {
+      throw new Error("Email Conflict");
+    }
+
+    const user = await User.findOne({ sessionID: req.headers.authorization });
+
+    if (!user) {
+      throw new Error("Not Found");
+    }
+
+    user.email = req.body.newEmail;
+
+    samePassword = await bcrypt.compare(req.body.password, user.password);
+
+    if (!samePassword) {
+      throw new Error("Forbidden");
+    }
+
+    const save = await user.save();
+    return res.status(200).json({
+      status: "success",
+      data: save,
+    });
+  } catch (err) {
+    return res.status(statusCode[err.message] ?? 400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+});
+
+app.post("/api/phoneNumberChange", async (req, res) => {
+  try {
+    await mongoose.connect(url);
+
+    if (!(await sessionCheck(req.headers.authorization))) {
+      throw new Error("Unauthorized");
+    }
+
+    existingPhoneNumber = await User.findOne({
+      phoneNumber: req.body.newPhoneNumber,
+    });
+
+    if (existingPhoneNumber) {
+      throw new Error("Phone number Conflict");
+    }
+
+    const user = await User.findOne({ sessionID: req.headers.authorization });
+
+    if (!user) {
+      throw new Error("Not Found");
+    }
+
+    user.phoneNumber = req.body.newPhoneNumber;
+
+    const save = await user.save();
+    return res.status(200).json({
+      status: "success",
+      data: save,
+    });
+  } catch (err) {
+    return res.status(statusCode[err.message] ?? 400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+});
+
+app.post("/api/passwordChange", async (req, res) => {
+  try {
+    await mongoose.connect(url);
+
+    if (!(await sessionCheck(req.headers.authorization))) {
+      throw new Error("Unauthorized");
+    }
+
+    const user = await User.findOne({ sessionID: req.headers.authorization });
+
+    if (!user) {
+      throw new Error("Not Found");
+    }
+
+    samePassword = await bcrypt.compare(req.body.oldPassword, user.password);
+
+    if (!samePassword) {
+      throw new Error("Forbidden");
+    }
+
+    salt = await bcrypt.genSalt(saltRounds);
+
+    hashedPassword = await bcrypt.hash(req.body.newPassword, saltRounds);
+
+    if (!hashedPassword) {
+      throw new Error("Error");
+    }
+
+    user.password = hashedPassword;
+
+    const save = await user.save();
+    return res.status(200).json({
+      status: "success",
+      data: save,
+    });
+  } catch (err) {
+    return res.status(statusCode[err.message] ?? 400).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+});
+
 app.get("/api/contacts", async (req, res) => {
   try {
     await mongoose.connect(url);

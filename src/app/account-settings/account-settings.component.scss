@@ -1,0 +1,20 @@
+.settings
+{
+    padding-top: 2rem;
+
+    display: flex;
+    flex-direction: column;
+    place-content: center;
+    align-items: center;
+}
+
+mat-form-field
+{
+    width: 30%;
+    padding-top: 2rem;
+}
+
+.saveButton
+{
+    margin-top: 1rem;
+}

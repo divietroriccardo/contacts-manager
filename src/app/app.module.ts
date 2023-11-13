@@ -32,6 +32,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength';
 import { MatMenuModule } from '@angular/material/menu';
 import { NgIf } from '@angular/common';
+import { AccountSettingsComponent } from './account-settings/account-settings.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,6 +45,7 @@ import { NgIf } from '@angular/common';
     DialogComponent,
     LoginComponent,
     SignupComponent,
+    AccountSettingsComponent,
   ],
   imports: [
     BrowserModule,

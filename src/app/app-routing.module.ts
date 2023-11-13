@@ -11,6 +11,8 @@ import { ContactListComponent } from './contact-list/contact-list.component';
 import { ContactFormComponent } from './contact-form/contact-form.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
+import { AccountSettingsComponent } from './account-settings/account-settings.component';
+
 import { SessionService } from './session.service';
 
 const canActivateFn: CanActivateFn = (
@@ -48,6 +50,12 @@ const routes: Routes = [
   {
     path: 'newContact',
     component: ContactFormComponent,
+    canActivate: [canActivateFn],
+  },
+
+  {
+    path: 'account/settings/:edit',
+    component: AccountSettingsComponent,
     canActivate: [canActivateFn],
   },
 
