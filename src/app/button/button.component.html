@@ -72,11 +72,11 @@
 
   <ng-template
     [ngIf]="
-      pageService.pageIsOn != 'login' &&
-      pageService.pageIsOn != 'signup' &&
-      pageService.pageIsOn != 'settings' &&
-      pageService.pageIsOn != 'edit' &&
-      pageService.pageIsOn != 'add'
+      pageService.pageIsOn !== 'login' &&
+      pageService.pageIsOn !== 'signup' &&
+      pageService.pageIsOn !== 'settings' &&
+      pageService.pageIsOn !== 'edit' &&
+      pageService.pageIsOn !== 'add'
     "
     class="accountButton"
   >
