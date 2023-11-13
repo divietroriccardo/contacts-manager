@@ -40,4 +40,14 @@
   <div class="error" *ngSwitchCase="'error'">
     <h3>ERRORE!</h3>
   </div>
+  
+  <ng-template [ngIf]="pageService.pageIsOn === 'search'">
+    <div class="backButton">
+      <button mat-fab color="basic" [routerLink]="['/contacts']" extended>
+        <mat-icon>arrow_back_ios</mat-icon>
+        Torna alla lista contatti
+      </button>
+    </div>
+  </ng-template>
 </div>
+
