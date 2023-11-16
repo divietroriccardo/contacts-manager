@@ -33,6 +33,8 @@ import { MatPasswordStrengthModule } from '@angular-material-extensions/password
 import { MatMenuModule } from '@angular/material/menu';
 import { NgIf } from '@angular/common';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,6 +48,7 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
     LoginComponent,
     SignupComponent,
     AccountSettingsComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,

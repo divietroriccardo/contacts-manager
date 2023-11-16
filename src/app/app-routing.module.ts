@@ -12,6 +12,7 @@ import { ContactFormComponent } from './contact-form/contact-form.component';
 import { LoginComponent } from './login/login.component';
 import { SignupComponent } from './signup/signup.component';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 import { SessionService } from './session.service';
 
@@ -24,49 +25,53 @@ const canActivateFn: CanActivateFn = (
 
 const routes: Routes = [
   {
-    path: '',
-    pathMatch: 'full',
-    redirectTo: '/login',
-  },
-
-  {
     path: 'contacts',
     component: ContactListComponent,
     canActivate: [canActivateFn],
   },
-
+  
   {
     path: 'search/:searchValue',
     component: ContactListComponent,
     canActivate: [canActivateFn],
   },
-
+  
   {
     path: 'details/:id',
     component: ContactFormComponent,
     canActivate: [canActivateFn],
   },
-
+  
   {
     path: 'newContact',
     component: ContactFormComponent,
     canActivate: [canActivateFn],
   },
-
+  
   {
     path: 'account/settings/:edit',
     component: AccountSettingsComponent,
     canActivate: [canActivateFn],
   },
-
+  
   {
     path: 'login',
     component: LoginComponent,
   },
-
+  
   {
     path: 'signup',
     component: SignupComponent,
+  },
+
+  {
+    path: '404',
+    component: PageNotFoundComponent,
+  },
+
+  {
+    path: '**',
+    redirectTo: '/404',
   },
 ];
 

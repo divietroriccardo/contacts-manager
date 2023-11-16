@@ -1,0 +1,13 @@
+.notFound
+{
+    display: flex;
+    flex-direction: column;
+    place-items: center;
+    padding-top: 3rem;
+}
+
+mat-icon
+{
+    transform: scale(2);
+    padding-bottom: 2rem;
+}

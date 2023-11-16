@@ -55,7 +55,7 @@
     </button>
   </ng-template>
 
-  <ng-template [ngIf]="pageService.pageIsOn === 'signup'">
+  <ng-template [ngIf]="pageService.pageIsOn === 'signup' || pageService.pageIsOn === '404'">
     <button
       mat-fab
       color="basic"
@@ -72,11 +72,8 @@
 
   <ng-template
     [ngIf]="
-      pageService.pageIsOn !== 'login' &&
-      pageService.pageIsOn !== 'signup' &&
-      pageService.pageIsOn !== 'settings' &&
-      pageService.pageIsOn !== 'edit' &&
-      pageService.pageIsOn !== 'add'
+      pageService.pageIsOn === 'list' ||
+      pageService.pageIsOn === 'details'
     "
     class="accountButton"
   >
