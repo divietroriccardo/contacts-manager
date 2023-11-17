@@ -29,36 +29,36 @@ const routes: Routes = [
     component: ContactListComponent,
     canActivate: [canActivateFn],
   },
-  
+
   {
     path: 'search/:searchValue',
     component: ContactListComponent,
     canActivate: [canActivateFn],
   },
-  
+
   {
     path: 'details/:id',
     component: ContactFormComponent,
     canActivate: [canActivateFn],
   },
-  
+
   {
     path: 'newContact',
     component: ContactFormComponent,
     canActivate: [canActivateFn],
   },
-  
+
   {
     path: 'account/settings/:edit',
     component: AccountSettingsComponent,
     canActivate: [canActivateFn],
   },
-  
+
   {
     path: 'login',
     component: LoginComponent,
   },
-  
+
   {
     path: 'signup',
     component: SignupComponent,
